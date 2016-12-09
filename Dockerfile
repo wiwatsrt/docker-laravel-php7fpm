@@ -1,4 +1,4 @@
-FROM alpine:3.4
+FROM alpine:edge
 
 RUN apk --update add php7 \
 	php7-ctype \
