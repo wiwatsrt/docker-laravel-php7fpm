@@ -1,36 +1,11 @@
-FROM alpine:latest
+FROM php:7-fpm-alpine
 
-RUN apk --update add php7 \
-	php7-ctype \
-	php7-curl \
-	php7-bcmath \
-	php7-dom \
-	php7-fpm \
-	php7-gd \
-	php7-iconv \
-	php7-json \
-	php7-mbstring \
-	php7-mcrypt \
-	php7-mysqli \
-	php7-opcache \
-	php7-openssl \
-	php7-pdo \
-	php7-pdo_mysql \
-	php7-phar \
-	php7-session \
-	php7-xml --repository http://nl.alpinelinux.org/alpine/edge/testing/ && rm /var/cache/apk/*
+RUN apk add --no-cache libmcrypt-dev freetype-dev libpng-dev libjpeg-turbo-dev freetype libpng libjpeg-turbo \
+    && docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-png-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install bcmath gd mbstring mcrypt mysqli pdo pdo_mysql opcache tokenizer zip \
+    && apk del --no-cache freetype-dev libpng-dev libjpeg-turbo-dev
 
-COPY php.ini /etc/php7/conf.d/custom_php.ini
-COPY php-fpm.conf /etc/php7/php-fpm.conf
-
-RUN ln -s /usr/bin/php7 /usr/bin/php
-
-RUN mkdir -p /var/www
+#Configuring php.ini
+COPY php.ini /usr/local/etc/php/conf.d/custom_php.ini
 
 WORKDIR /var/www
-
-VOLUME /var/www
-
-EXPOSE 9000
-
-CMD ["php-fpm7", "-F"]
