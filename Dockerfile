@@ -9,3 +9,5 @@ RUN apk add --no-cache freetype-dev libpng-dev libjpeg-turbo-dev freetype libpng
 COPY php.ini /usr/local/etc/php/conf.d/custom_php.ini
 
 WORKDIR /var/www
+
+ENTRYPOINT ["php"]
